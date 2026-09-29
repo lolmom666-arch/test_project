@@ -19,6 +19,7 @@ def one_click(currencyId: str = "3", countryId: str = "3159",
         "fos_user_registration_form[countryId]": countryId,
         "first_refill_bonus_type_choice": bonusType,
     }
+    print(BASE_URL)
     reg = requests.post(f"{BASE_URL}/api/v1/registration/one_click", data=payload)
     if reg.status_code != 200:
         raise RuntimeError(
