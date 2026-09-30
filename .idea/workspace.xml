@@ -4,19 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bd1ae840-95b0-4644-95de-a0475877cddc" name="Changes" comment="update">
-      <change afterPath="$PROJECT_DIR$/src/db_client.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/bonus_packets/api_v1_bonus_packets_refill/test_api.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/bonus_packets/api_v1_bonus_packets_refill/test_field_bonus_packet_id.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/conftest.py" beforeDir="false" afterPath="$PROJECT_DIR$/conftest.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bd_client.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/one_click.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/one_click.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ssh_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ssh_client.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/bonus_packets/api_v1_bonus_packets_refill/test_auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/bonus_packets/api_v1_bonus_packets_refill/test_auth.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/bonus_packets/api_v1_bonus_packets_refill/test_field_refill_id.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/bonus_packets/api_v1_bonus_packets_refill/test_field_refill_id.py" afterDir="false" />
-    </list>
+    <list default="true" id="bd1ae840-95b0-4644-95de-a0475877cddc" name="Changes" comment="update" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
