@@ -1,12 +1,12 @@
-# Переменные окружения
+# Скопируй в .env и заполни своими значениями:
 
-Создай файл `.env` в корне проекта и заполни:
-
-Переменная | Описание
-`SSH_HOST` | Хост SSH-сервера
-`SSH_USER` | SSH-пользователь
-`HOST` | Хост MySQL
-`PORT` | Порт MySQL 
-`PASSWORD` | Пароль MySQL
-`DATABASE` | Имя базы данных
-`DEV_STAND` | Имя дев стенда
+# SSH
+SSH_HOST=
+SSH_USER=
+# MySQL
+HOST=
+PORT=3306
+PASSWORD=
+DATABASE=
+# Окружение
+DEV_STAND=

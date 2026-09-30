@@ -10,8 +10,11 @@ class User:
     password: str
 
 
-def one_click(currencyId: str = "3", countryId: str = "3159",
-              bonusType: str = "casino") -> str:
+def one_click(
+        currencyId: str = "3",
+        countryId: str = "3159",
+        bonusType: str = "casino"
+) -> str:
     """Регистрация в one_click."""
     payload = {
         "fos_user_registration_form[currencyId]": currencyId,
@@ -19,21 +22,26 @@ def one_click(currencyId: str = "3", countryId: str = "3159",
         "fos_user_registration_form[countryId]": countryId,
         "first_refill_bonus_type_choice": bonusType,
     }
-    print(BASE_URL)
-    reg = requests.post(f"{BASE_URL}/api/v1/registration/one_click", data=payload)
-    if reg.status_code != 200:
+    response = requests.post(
+        f"{BASE_URL}/api/v1/registration/one_click",
+        data=payload
+    )
+    if response.status_code != 200:
         raise RuntimeError(
-            f"Ошибка API: {reg.status_code}, тело: {reg.text}")
-    return json.loads(reg.text)["jwt"]
+            f"Ошибка API: {response.status_code}, тело: {response.text}")
+    jwt = json.loads(response.text)["jwt"]
+    return f"Bearer {jwt}"
 
 
-def get_password(jwt: str) -> User:
+def get_password(headers) -> User:
     """Получение username и password."""
-    headers_data = {"Authorization": jwt}
-    get = requests.get(f"{BASE_URL}/api/v1/registration/one_click/get_password.json", headers=headers_data)
-    if get.status_code != 200:
-        raise RuntimeError(f"Ошибка API: {get.status_code}, тело: {get.text}")
+    response = requests.get(
+        f"{BASE_URL}/api/v1/registration/one_click/get_password.json",
+        headers=headers
+    )
+    if response.status_code != 200:
+        raise RuntimeError(f"Ошибка API: {response.status_code}, тело: {response.text}")
 
-    get_text = get.text
+    get_text = response.text
     pass_log = json.loads(get_text)
     return User(pass_log["username"], pass_log["password"])

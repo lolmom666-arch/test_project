@@ -8,14 +8,14 @@ class SSHClient:
         self.client: Connection | None = Connection(host=f"{SSH_USER}@{DEV_STAND}.{SSH_HOST}")
 
     def refill(self, user_id: str, amount: int = 1000) -> None:
-        """Пополнение пользователя через консольную команду."""
+        """Пополнение счета через консоль."""
         self.client.run(
             f"sudo -iu mostbet bash -c '/var/www/mostbet/current/"
             f"bin/console simulate:refill:greenback -u{user_id} -a{amount} -p270 -t27001'",
             in_stream=False, hide=True)
 
     def command(self, command: str) -> None:
-        """Выполнение конкретной консольной команды."""
+        """Запустить консольные команды."""
         self.client.run(f"sudo -iu mostbet bash -c '/var/www/mostbet/current/ "
                         f"{command}", in_stream=False, hide=True)
 

@@ -5,9 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bd1ae840-95b0-4644-95de-a0475877cddc" name="Changes" comment="update">
-      <change afterPath="$PROJECT_DIR$/tests/bonus_packets/api_v1_bonus_packets_refill/test_field_refill_id.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/db_client.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/bonus_packets/api_v1_bonus_packets_refill/test_api.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/bonus_packets/api_v1_bonus_packets_refill/test_field_bonus_packet_id.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/conftest.py" beforeDir="false" afterPath="$PROJECT_DIR$/conftest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bd_client.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/one_click.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/one_click.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ssh_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ssh_client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/bonus_packets/api_v1_bonus_packets_refill/test_auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/bonus_packets/api_v1_bonus_packets_refill/test_auth.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/bonus_packets/api_v1_bonus_packets_refill/test_field_refill_id.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/bonus_packets/api_v1_bonus_packets_refill/test_field_refill_id.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,7 +55,9 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Python tests.Python tests for test_api.test_fields.executor": "Run",
     "Python tests.Python tests for test_auth.test_auth.executor": "Run",
+    "Python tests.Python tests for test_field_bonus_packet_id.test_field_bonus_packet_id.executor": "Run",
     "Python tests.Python tests for test_field_refill_id.executor": "Run",
     "Python tests.Python tests for test_field_refill_id.test_field_refill_id.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
@@ -55,7 +65,22 @@
     "git-widget-placeholder": "my-project"
   }
 }]]></component>
-  <component name="RunManager" selected="Python tests.Python tests for test_field_refill_id.test_field_refill_id">
+  <component name="RunManager" selected="Python tests.Python tests for test_field_bonus_packet_id.test_field_bonus_packet_id">
+    <configuration name="Python tests for test_api.test_fields" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="PythonProject2" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/bonus_packets/api_v1_bonus_packets_refill" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;test_api.test_fields&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
     <configuration name="Python tests for test_auth.test_auth" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="PythonProject2" />
       <option name="ENV_FILES" value="" />
@@ -71,6 +96,21 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
       <option name="_new_target" value="&quot;test_auth.test_auth&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests for test_field_bonus_packet_id.test_field_bonus_packet_id" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="PythonProject2" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/bonus_packets/api_v1_bonus_packets_refill" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;test_field_bonus_packet_id.test_field_bonus_packet_id&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
@@ -112,11 +152,15 @@
     </configuration>
     <list>
       <item itemvalue="Python tests.Python tests for test_field_refill_id" />
+      <item itemvalue="Python tests.Python tests for test_api.test_fields" />
+      <item itemvalue="Python tests.Python tests for test_field_bonus_packet_id.test_field_bonus_packet_id" />
       <item itemvalue="Python tests.Python tests for test_field_refill_id.test_field_refill_id" />
       <item itemvalue="Python tests.Python tests for test_auth.test_auth" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python tests.Python tests for test_field_bonus_packet_id.test_field_bonus_packet_id" />
+        <item itemvalue="Python tests.Python tests for test_api.test_fields" />
         <item itemvalue="Python tests.Python tests for test_field_refill_id.test_field_refill_id" />
         <item itemvalue="Python tests.Python tests for test_auth.test_auth" />
       </list>
