@@ -1,15 +1,15 @@
 import pytest
 import requests
+from typing import Any
 from src.db_client import DBClient
 from src.config import BASE_URL
 
 
-@pytest.mark.parametrize("use_valid_token, expected_code", [
-    (True, 200),
-    (False, 401)
-])
+@pytest.mark.parametrize("create_refill, expected_code", [
+    (0, 200),
+    (None, 401)
+], indirect=["create_refill"])
 def test_auth(
-        use_valid_token: bool,
         expected_code: int,
         token_header: dict[str, str],
         database_client: DBClient,
@@ -17,13 +17,9 @@ def test_auth(
 ) -> None:
     """Проверка авторизации."""
     token = {"Authorization": ""}
-    if use_valid_token:
+    if expected_code==200:
         token = token_header
-        database_client.update(
-            "UPDATE refill SET status = 0 WHERE id = %s",
-            (create_refill,)
-        )
-    body = {"refillId": create_refill, "bonusPacketId": 212}
+    body: dict[str, Any] = {"refillId": create_refill, "bonusPacketId": 212}
     response = requests.put(
         f"{BASE_URL}/api/v1/bonus/packets/refill",
         json=body,
