@@ -9,6 +9,8 @@ class SSHClient:
 
     def refill(self, user_id: str, amount: int = 1000) -> None:
         """Пополнение счета через консоль."""
+        if self.client is None:
+            raise RuntimeError("Нет активного соединения")
         self.client.run(
             f"sudo -iu mostbet bash -c '/var/www/mostbet/current/"
             f"bin/console simulate:refill:greenback -u{user_id} -a{amount} -p270 -t27001'",
@@ -16,8 +18,10 @@ class SSHClient:
 
     def command(self, command: str) -> None:
         """Запустить консольные команды."""
+        if self.client is None:
+            raise RuntimeError("Нет активного соединения")
         self.client.run(f"sudo -iu mostbet bash -c '/var/www/mostbet/current/ "
-                        f"{command}", in_stream=False, hide=True)
+                        f"{command}'", in_stream=False, hide=True)
 
     def close(self) -> None:
         """Закрыть соединение."""

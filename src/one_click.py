@@ -24,12 +24,13 @@ def one_click(
     }
     response = requests.post(
         f"{BASE_URL}/api/v1/registration/one_click",
-        data=payload
+        data=payload,
+        timeout=10
     )
     if response.status_code != 200:
         raise RuntimeError(
             f"Ошибка API: {response.status_code}, тело: {response.text}")
-    jwt = json.loads(response.text)["jwt"]
+    jwt = response.json()["jwt"]
     return f"Bearer {jwt}"
 
 
@@ -37,11 +38,11 @@ def get_password(headers) -> User:
     """Получение username и password."""
     response = requests.get(
         f"{BASE_URL}/api/v1/registration/one_click/get_password.json",
-        headers=headers
+        headers=headers,
+        timeout=10
     )
     if response.status_code != 200:
         raise RuntimeError(f"Ошибка API: {response.status_code}, тело: {response.text}")
 
-    get_text = response.text
-    pass_log = json.loads(get_text)
-    return User(pass_log["username"], pass_log["password"])
+    data = response.json()
+    return User(data["username"], data["password"])

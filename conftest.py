@@ -3,8 +3,9 @@ from src.one_click import User, one_click, get_password
 from src.ssh_client import SSHClient
 from src.db_client import DBClient
 
+ALLOWED_STATUSES = (None, 0, 1, 2, 3)
 
-@pytest.fixture()
+@pytest.fixture(scope="module")
 def ssh_client():
     """SSH-клиент для одного теста."""
     client = SSHClient()
@@ -12,7 +13,7 @@ def ssh_client():
     client.close()
 
 
-@pytest.fixture()
+@pytest.fixture(scope="module")
 def database_client():
     """БД-клиент для одного теста."""
     client = DBClient()
@@ -32,17 +33,27 @@ def create_user(token_header) -> User:
     return get_password(token_header)
 
 @pytest.fixture()
-def create_refill(ssh_client: SSHClient, database_client: DBClient, create_user: User) -> str:
-    """Пополнение счета через SSH-клиент, возвращает refill_id."""
+def create_refill(request, ssh_client, database_client, create_user) -> str|None:
+    status = getattr(request, "param", 2)
+    assert status in ALLOWED_STATUSES, (
+        f"Недопустимый статус {status}. Разрешены: {ALLOWED_STATUSES}"
+    )
+    if status is None:
+        return None
     ssh_client.refill(create_user.username)
     refill_id = database_client.select(
-        "SELECT id FROM refill WHERE user_id = %s",
-        (create_user.username,),
-    )[0][0]
+    "SELECT id FROM refill WHERE user_id = %s ORDER BY id DESC LIMIT 1",
+    (create_user.username,),
+        )[0][0]
+    if status in (0,1,3):
+        database_client.update(
+        "UPDATE refill SET status = %s WHERE id = %s",
+        (status, refill_id,)
+    )
     return str(refill_id)
 
 @pytest.fixture()
-def valid_bonus_packet_id(database_client:  DBClient) -> int:
+def valid_bonus_packet_id(database_client: DBClient) -> int:
     """Возвращает ID любого Бонус пакета."""
     bonus_packet_id = database_client.select(
         "SELECT id FROM bonus_packet LIMIT 1",
