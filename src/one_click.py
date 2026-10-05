@@ -1,4 +1,3 @@
-import json
 import requests
 from src.config import BASE_URL
 from dataclasses import dataclass
@@ -8,13 +7,14 @@ from dataclasses import dataclass
 class User:
     username: str
     password: str
+    jwt_header: str
 
 
 def one_click(
         currencyId: str = "3",
         countryId: str = "3159",
         bonusType: str = "casino"
-) -> str:
+) -> User:
     """Регистрация в one_click."""
     payload = {
         "fos_user_registration_form[currencyId]": currencyId,
@@ -31,18 +31,19 @@ def one_click(
         raise RuntimeError(
             f"Ошибка API: {response.status_code}, тело: {response.text}")
     jwt = response.json()["jwt"]
-    return f"Bearer {jwt}"
+    jwt_header = {"Authorization": f"Bearer {jwt}"}
+    return get_password(jwt_header)
 
 
-def get_password(headers) -> User:
+def get_password(header) -> User:
     """Получение username и password."""
     response = requests.get(
         f"{BASE_URL}/api/v1/registration/one_click/get_password.json",
-        headers=headers,
+        headers=header,
         timeout=10
     )
     if response.status_code != 200:
         raise RuntimeError(f"Ошибка API: {response.status_code}, тело: {response.text}")
 
     data = response.json()
-    return User(data["username"], data["password"])
+    return User(data["username"], data["password"], header)

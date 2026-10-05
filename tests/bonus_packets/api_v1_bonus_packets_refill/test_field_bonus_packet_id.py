@@ -1,6 +1,5 @@
 import pytest
 import requests
-from src.one_click import User
 from src.db_client import DBClient
 from src.config import BASE_URL
 
