@@ -1,13 +1,13 @@
 import requests
 from src.config import BASE_URL
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 @dataclass
 class User:
     username: str
-    password: str
-    jwt_header: str
+    password: str = field(repr=False)
+    jwt_header: dict[str, str] = field(repr=False)
 
 
 def one_click(
@@ -35,7 +35,7 @@ def one_click(
     return get_password(jwt_header)
 
 
-def get_password(header) -> User:
+def get_password(header: dict[str, str]) -> User:
     """Получение username и password."""
     response = requests.get(
         f"{BASE_URL}/api/v1/registration/one_click/get_password.json",
