@@ -15,10 +15,11 @@ class SSHClient:
         """Пополнение счета через консоль."""
         if type(amount) is not int or amount <= 0:
             raise ValueError("Сумма пополнения должна быть положительным целым числом")
-        self.command(shlex.join([
-            "bin/console", "simulate:refill:greenback", f"-u{user_id}",
-            f"-a{amount}", "-p270", "-t27001",
-        ]))
+        script = f"cd /var/www/mostbet/current && bin/console simulate:refill:greenback -u{user_id} -a{amount} -p270 -t27001"
+        self.client.run(
+            f"sudo -iu mostbet bash -c {shlex.quote(script)}",
+            in_stream=False, hide=True
+        )
 
     def command(self, command: str) -> None:
         """Запустить консольные команды."""

@@ -93,6 +93,7 @@ def create_user_and_refill(request: pytest.FixtureRequest) -> RefillFactory:
         user = one_click()
         ssh_client.refill(user.username)
         refill_id = _wait_for_refill(database_client, user.username)
+        print(refill_id)
         database_client.update(
             "UPDATE refill SET status = %s WHERE id = %s", (status, refill_id)
         )
