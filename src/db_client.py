@@ -12,6 +12,12 @@ class DBClient:
             port=PORT,
             password=PASSWORD,
             database=DATABASE,
+            # API/SSH пишут через другие подключения: каждый SELECT должен
+            # видеть уже зафиксированные изменения, без снимка прошлого теста.
+            autocommit=True,
+            connect_timeout=10,
+            read_timeout=15,
+            write_timeout=15,
         )
 
     def select(self, command: str, params: tuple = ()) -> list[tuple]:
@@ -36,6 +42,7 @@ class DBClient:
             raise RuntimeError("Нет активного соединения")
         with self.client.cursor() as cursors:
             cursors.execute(command, params)
+        self.client.commit()
 
     def close(self) -> None:
         """Закрыть соединение."""
