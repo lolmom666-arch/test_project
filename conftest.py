@@ -63,7 +63,7 @@ def missing_bonus_packet_id(database_client: DBClient) -> int:
 
 
 def _wait_for_refill(database_client: DBClient, username: str, timeout: float = 5) -> str:
-    """Ограниченно ждать запись после завершения SSH-команды."""
+    """Ограниченно ждать запись после завершения SSH-команды"""
     deadline = monotonic() + timeout
     while True:
         rows = database_client.select(
