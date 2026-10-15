@@ -8,7 +8,7 @@ from src.db_client import DBClient
 class TestAPIBonusPacketRefill:
     @pytest.mark.parametrize("authorized, expected_code", [(True, 200), (False, 401)])
     def test_auth(self, authorized: bool, expected_code: int, create_user_and_refill) -> None:
-        """Корректное пополнение; меняется только заголовок авторизации."""
+        """Проверка заголовков; меняется только заголовок авторизации."""
         user, refill_id = create_user_and_refill(0)
         token = user.jwt_header if authorized else {"Authorization": ""}
         response = requests.put(
@@ -34,6 +34,7 @@ class TestAPIBonusPacketRefill:
         (("refillId", "bonusPacketId", "one_field", "two_field"), 200),
     ])
     def test_fields(self, fields: tuple[str, ...], expected_code: int, create_user_and_refill, request) -> None:
+        """Проверка обязательности полей + лишние поля"""
         if "refillId" in fields:
             user, refill_id = create_user_and_refill(0)
         else:
@@ -80,7 +81,7 @@ class TestAPIBonusPacketRefill:
             create_user_and_refill,
             request,
     ) -> None:
-        """Проверка поля refillId."""
+        """Проверка работы поля refillId в зависимости от переданного значения."""
         if refill_id == "valid":
             assert refill_status is not None
             user, refill_id = create_user_and_refill(refill_status)
@@ -100,8 +101,8 @@ class TestAPIBonusPacketRefill:
         else:
             assert data["message"] == expected_message
 
-
-    def _read_state(self, database_client: DBClient, refill_id: str) -> tuple[list[tuple], list[tuple]]:
+    @staticmethod
+    def _read_state(database_client: DBClient, refill_id: str) -> tuple[list[tuple], list[tuple]]:
         """Все опции пополнения, включая записи с другим packetId."""
         options = database_client.select(
             "SELECT id, value FROM user_selected_option WHERE entity_id = %s ORDER BY id",
@@ -133,6 +134,7 @@ class TestAPIBonusPacketRefill:
         database_client: DBClient,
         request,
     ) -> None:
+        """Проверка работы поля bonus_packet_id в зависимости от переданного значения."""
         user, refill_id = create_user_and_refill(0)
         if bonus_packet_id in ("valid_bonus_packet_id", "missing_bonus_packet_id"):
             bonus_packet_id = request.getfixturevalue(bonus_packet_id)

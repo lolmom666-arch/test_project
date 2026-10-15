@@ -41,8 +41,8 @@ def create_user() -> User:
 def valid_bonus_packet_id(database_client: DBClient) -> int:
     """Обычный пакет из БД, исключая специальные значения MWL."""
     rows = database_client.select(
-        "SELECT id FROM bonus_packet WHERE id NOT IN (%s, %s) ORDER BY id LIMIT 1",
-        (50000, 50001),
+        "SELECT id FROM bonus_packet WHERE id < %s ORDER BY id LIMIT 1",
+        (50000,)
     )
     if not rows:
         pytest.fail("Для MOSTBET-сценария нужен бонусный пакет в таблице bonus_packet")
@@ -51,9 +51,10 @@ def valid_bonus_packet_id(database_client: DBClient) -> int:
 
 @pytest.fixture()
 def missing_bonus_packet_id(database_client: DBClient) -> int:
-    """Свободный положительный ID ниже специальных значений MWL."""
+    """Свободный/пустой положительный ID ниже специальных значений MWL."""
     rows = database_client.select(
-        "SELECT id FROM bonus_packet WHERE id BETWEEN %s AND %s", (49000, 49999)
+        "SELECT id FROM bonus_packet WHERE id BETWEEN %s AND %s",
+        (49000, 49999)
     )
     available = set(range(49000, 50000)) - {int(row[0]) for row in rows}
     if not available:
