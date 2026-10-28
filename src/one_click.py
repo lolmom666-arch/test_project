@@ -1,6 +1,5 @@
-import requests
-from src.config import BASE_URL
 from dataclasses import dataclass, field
+from src.httpx_client import UserClient
 
 
 @dataclass
@@ -11,6 +10,8 @@ class User:
 
 
 def one_click(
+        *,
+        user_client: UserClient,
         currencyId: str = "3",
         countryId: str = "3159",
         bonusType: str = "casino"
@@ -22,28 +23,23 @@ def one_click(
         "fos_user_registration_form[countryId]": countryId,
         "first_refill_bonus_type_choice": bonusType,
     }
-    response = requests.post(
-        f"{BASE_URL}/api/v1/registration/one_click",
-        data=payload,
-        timeout=10
-    )
+    response = user_client.post_registration_one_click(payload=payload)
     if response.status_code != 200:
         raise RuntimeError(
             f"Ошибка API: {response.status_code}, тело: {response.text}")
     jwt = response.json()["jwt"]
     jwt_header = {"Authorization": f"Bearer {jwt}"}
-    return get_password(jwt_header)
+    return get_password(client=user_client,  header=jwt_header)
 
 
-def get_password(header: dict[str, str]) -> User:
+def get_password(
+        *,
+        client: UserClient,
+        header: dict[str, str]
+) -> User:
     """Получение username и password."""
-    response = requests.get(
-        f"{BASE_URL}/api/v1/registration/one_click/get_password.json",
-        headers=header,
-        timeout=10
-    )
+    response = client.get_registration_one_click_get_password(header)
     if response.status_code != 200:
         raise RuntimeError(f"Ошибка API: {response.status_code}, тело: {response.text}")
-
     data = response.json()
     return User(data["username"], data["password"], header)

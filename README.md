@@ -94,3 +94,29 @@ python -m pytest -m integration -q tests/bonus_packets/api_v1_bonus_packets_refi
 
 Перезапуск упавшего теста не скрывает ошибку: автоматические повторы запросов
 регистрации и пополнения не включены.
+
+## Отчёты Allure
+
+Плагин `allure-pytest` входит в `requirements.txt`. Сбор результатов в
+`allure-results/` включён в `pytest.ini`. Команды выполняются из корня проекта:
+
+```bash
+source .venv/bin/activate
+python -m pytest --clean-alluredir
+allure generate allure-results -o allure-report --clean
+allure open allure-report
+```
+
+`--clean-alluredir` удаляет результаты предыдущего запуска перед тестами.
+Без него результаты накапливаются. Генерацию отчёта можно выполнить и после
+падения тестов. Для просмотра уже имеющихся результатов достаточно двух
+последних команд. После `allure open` откройте ссылку из терминала в браузере;
+для остановки сервера просмотра нажмите Ctrl+C.
+Папки результатов и HTML-отчёта исключены из Git.
+
+На этом Mac Allure 2.46.1 установлен в
+`/Users/anastasiyap/Documents/Codex/tools/allure-2.46.1`.
+Команда `allure` добавлена в `~/.zshrc` через обёртку в
+`/Users/anastasiyap/Documents/Codex/tools/bin`, которая использует Java из PyCharm CE.
+После установки откройте новую вкладку терминала или выполните `source ~/.zshrc`.
+На другом компьютере Allure CLI и Java нужно установить отдельно.

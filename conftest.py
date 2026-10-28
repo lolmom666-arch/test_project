@@ -2,7 +2,9 @@ from collections.abc import Callable, Iterator
 from time import monotonic, sleep
 
 import pytest
+import httpx
 
+from src.httpx_client import EVENT_HOOKS, BonusPacketsClient, UserClient
 from src.one_click import User, one_click
 from src.ssh_client import SSHClient
 from src.db_client import DBClient
@@ -32,9 +34,9 @@ def database_client() -> Iterator[DBClient]:
 
 
 @pytest.fixture()
-def create_user() -> User:
+def create_user(user_client) -> User:
     """Регистрация пользователя вместе с его заголовком авторизации."""
-    return one_click()
+    return one_click(user_client=user_client)
 
 
 @pytest.fixture()
@@ -79,7 +81,10 @@ def _wait_for_refill(database_client: DBClient, username: str, timeout: float = 
 
 
 @pytest.fixture()
-def create_user_and_refill(request: pytest.FixtureRequest) -> RefillFactory:
+def create_user_and_refill(
+        request: pytest.FixtureRequest,
+        user_client,
+) -> RefillFactory:
     """Фабрика: user, refill_id = create_user_and_refill(status).
 
     Каждый вызов регистрирует владельца пополнения. Подключения нужны только
@@ -91,7 +96,7 @@ def create_user_and_refill(request: pytest.FixtureRequest) -> RefillFactory:
 
         database_client: DBClient = request.getfixturevalue("database_client")
         ssh_client: SSHClient = request.getfixturevalue("ssh_client")
-        user = one_click()
+        user = one_click(user_client=user_client)
         ssh_client.refill(user.username)
         refill_id = _wait_for_refill(database_client, user.username)
         print(refill_id)
@@ -101,3 +106,19 @@ def create_user_and_refill(request: pytest.FixtureRequest) -> RefillFactory:
         return user, refill_id
 
     return _create
+
+
+@pytest.fixture(scope="session")
+def httpx_client():
+    with httpx.Client(event_hooks=EVENT_HOOKS) as client:
+        yield client
+
+
+@pytest.fixture(scope="session")
+def bonus_packets_client(httpx_client)-> BonusPacketsClient:
+    return BonusPacketsClient(httpx_client)
+
+
+@pytest.fixture(scope="session")
+def user_client(httpx_client) -> UserClient:
+    return UserClient(httpx_client)
