@@ -5,17 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bd1ae840-95b0-4644-95de-a0475877cddc" name="Changes" comment="update">
-      <change afterPath="$PROJECT_DIR$/src/httpx_client.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/conftest.py" beforeDir="false" afterPath="$PROJECT_DIR$/conftest.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pytest.ini" beforeDir="false" afterPath="$PROJECT_DIR$/pytest.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/one_click.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/one_click.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/bonus_packets/test_api_bonus_packets_refill.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/bonus_packets/test_api_bonus_packets_refill.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/unit/conftest.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/unit/test_regressions.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
