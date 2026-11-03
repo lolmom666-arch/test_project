@@ -38,8 +38,8 @@ class TestAPIBonusPacketRefill:
 
     @allure.title("Запрос с обязательными и дополнительными полями: {param_id}")
     @allure.testcase(
-        "https://media.test8bit.com/testrail/index.php?/cases/view/12574129",
-        name="Проверка обязательности полей",
+        "https://media.test8bit.com/testrail/index.php?/cases/view/12653520",
+        name="Проверка обязательность и допополнительных полей",
     )
     @allure.tag("positive", "fields")
     @allure.description(
@@ -80,8 +80,8 @@ class TestAPIBonusPacketRefill:
 
     @allure.title("Запрос без обязательных полей отклоняется: {param_id}")
     @allure.testcase(
-        "https://media.test8bit.com/testrail/index.php?/cases/view/12574129",
-        name="Проверка обязательности полей",
+        "https://media.test8bit.com/testrail/index.php?/cases/view/12653521",
+        name="Проверка без обязательных полей",
     )
     @allure.tag("negative", "fields")
     @allure.description(
@@ -120,8 +120,8 @@ class TestAPIBonusPacketRefill:
 
     @allure.title("Успешный выбор бонусного пакета: {param_id}")
     @allure.testcase(
-        "https://media.test8bit.com/testrail/index.php?/cases/view/12566512",
-        name="Валидация refillId",
+        "https://media.test8bit.com/testrail/index.php?/cases/view/12653522",
+        name="Успешный выбор бонусного пакета в refill_status 0 и 1",
     )
     @allure.tag("positive", "field_refill")
     @allure.description(
@@ -152,8 +152,8 @@ class TestAPIBonusPacketRefill:
 
     @allure.title("Выбор бонусного пакета отклоняется: {param_id}")
     @allure.testcase(
-        "https://media.test8bit.com/testrail/index.php?/cases/view/12566512",
-        name="Валидация refillId",
+        "https://media.test8bit.com/testrail/index.php?/cases/view/12653524",
+        name="Ошибка выбора бонусного пакета в refill_status 2 и 3",
     )
     @allure.tag("negative", "field_refill")
     @allure.description(
@@ -186,7 +186,7 @@ class TestAPIBonusPacketRefill:
     @allure.title("Запрос с некорректным refillId отклоняется: {param_id}")
     @allure.testcase(
         "https://media.test8bit.com/testrail/index.php?/cases/view/12566512",
-        name="Валидация refillId",
+        name="Проверка некорректный refillId",
     )
     @allure.tag("negative", "field_refill")
     @allure.description(
@@ -217,8 +217,8 @@ class TestAPIBonusPacketRefill:
 
     @allure.title("Выбор бонусного пакета для чужого пополнения отклоняется")
     @allure.testcase(
-        "",
-        name="",
+        "https://media.test8bit.com/testrail/index.php?/cases/view/12653523",
+        name="Бонус при чужом пополнении запрещён",
     )
     @allure.tag("negative", "field_refill")
     @allure.description(
@@ -257,8 +257,8 @@ class TestAPIBonusPacketRefill:
 
     @allure.title("Запрос с некорректным bonusPacketId отклоняется: {param_id}")
     @allure.testcase(
-        "https://media.test8bit.com/testrail/index.php?/cases/view/12573068",
-        name="Валидация bonusPacketId",
+        "https://media.test8bit.com/testrail/index.php?/cases/view/12653591",
+        name="Проверка некорректный bonusPacketId",
     )
     @allure.tag("negative", "field_bonus_packet")
     @allure.description(
@@ -301,8 +301,8 @@ class TestAPIBonusPacketRefill:
 
     @allure.title("Выбор бонусного пакета MOSTBET сохраняется в БД")
     @allure.testcase(
-        "https://media.test8bit.com/testrail/index.php?/cases/view/12573068",
-        name="Валидация bonusPacketId",
+        "https://media.test8bit.com/testrail/index.php?/cases/view/12653594",
+        name="Выбор бонусного пакета MOSTBET",
     )
     @allure.tag("positive", "field_bonus_packet")
     @allure.description(
@@ -348,8 +348,8 @@ class TestAPIBonusPacketRefill:
 
     @allure.title("Выбор бонусного пакета MWL: {param_id}")
     @allure.testcase(
-        "https://media.test8bit.com/testrail/index.php?/cases/view/12573068",
-        name="Валидация bonusPacketId",
+        "https://media.test8bit.com/testrail/index.php?/cases/view/12653598",
+        name="Выбор бонусного пакета MWL",
     )
     @allure.tag("positive", "field_bonus_packet")
     @allure.description(
