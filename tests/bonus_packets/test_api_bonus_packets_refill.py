@@ -1,6 +1,7 @@
 import allure
 import pytest
 from src.db_client import DBClient
+from src.models.bonus_packets_models import BonusPacketRefillErrorResponseDetails, BonusPacketRefillErrorResponseBase
 
 
 @pytest.mark.integration
@@ -15,8 +16,8 @@ class TestAPIBonusPacketRefill:
     )
     @allure.tag("negative", "auth")
     @allure.description(
-        "Отправляем запрос с пустым заголовком Authorization. "
-        "Ожидаем HTTP 401 и сообщение JWT Token not found."
+        "Отправляем запрос с пустым заголовком Authorization. Ожидаем HTTP 401, код 401 и сообщение "
+        "JWT Token not found."
     )
     def test_bad_auth(
             self,
@@ -39,13 +40,13 @@ class TestAPIBonusPacketRefill:
     @allure.title("Запрос с обязательными и дополнительными полями: {param_id}")
     @allure.testcase(
         "https://media.test8bit.com/testrail/index.php?/cases/view/12653520",
-        name="Проверка обязательность и допополнительных полей",
+        name="Проверка обязательных и дополнительных полей",
     )
     @allure.tag("positive", "fields")
     @allure.description(
-        "Отправляем запрос с обязательными полями refillId и bonusPacketId. "
-        "Состав дополнительных полей определяется сценарием. "
-        "Ожидаем HTTP 200 и пустой JSON-массив в ответе."
+        "Отправляем запрос с обязательными полями refillId и bonusPacketId для пополнения в статусе 0 "
+        "с токеном владельца. Состав полей определяется сценарием; дополнительные поля, если "
+        "переданы, имеют значение null. Ожидаем HTTP 200 и пустой JSON-массив в ответе."
     )
     @pytest.mark.parametrize("fields", [
         pytest.param(("refillId", "bonusPacketId"), id="Только обязательные поля"),
@@ -81,12 +82,14 @@ class TestAPIBonusPacketRefill:
     @allure.title("Запрос без обязательных полей отклоняется: {param_id}")
     @allure.testcase(
         "https://media.test8bit.com/testrail/index.php?/cases/view/12653521",
-        name="Проверка без обязательных полей",
+        name="Запрос без обязательных полей",
     )
     @allure.tag("negative", "fields")
     @allure.description(
-        "Отправляем запрос с неполным набором обязательных полей, указанным в сценарии. "
-        "Ожидаем HTTP 400, код VALIDATION и сообщение Validation failed."
+        "Отправляем запрос с неполным набором обязательных полей, указанным в сценарии, с токеном "
+        "владельца пополнения. Ожидаем HTTP 400, код VALIDATION и сообщение Validation failed. "
+        "Проверяем структуру ответа моделью Pydantic, точный набор и количество ошибок для "
+        "отсутствующих полей: каждому соответствует сообщение This value should not be null."
     )
     @pytest.mark.parametrize("body_field", [
         pytest.param("", id="Пустой JSON-объект"),
@@ -112,10 +115,21 @@ class TestAPIBonusPacketRefill:
             )
         with allure.step("Проверяем HTTP-статус 400"):
             assert response.status_code == 400
-        with allure.step("Проверяем код и сообщение в ответе"):
-            json_body = response.json()
-            assert json_body["code"] == "VALIDATION"
-            assert json_body["message"] == "Validation failed"
+        with allure.step("Проверяем структуру ответа моделью Pydantic, код и сообщение ошибки"):
+            error = BonusPacketRefillErrorResponseDetails.model_validate(response.json())
+            assert error.code == "VALIDATION"
+            assert error.message == "Validation failed"
+        with allure.step("Проверяем точный набор и количество ошибок для отсутствующих полей"):
+            expected = {
+                'refillId': 'This value should not be null.',
+                'bonusPacketId': 'This value should not be null.'
+            }
+            if body_field in expected:
+                del expected[body_field]
+
+            actual = {detail.fieldName: detail.key for detail in error.details}
+            assert len(expected) == len(error.details)
+            assert expected == actual
 
 
     @allure.title("Успешный выбор бонусного пакета: {param_id}")
@@ -125,9 +139,8 @@ class TestAPIBonusPacketRefill:
     )
     @allure.tag("positive", "field_refill")
     @allure.description(
-        "Выбираем пакет MWL с ID 50001 для пополнения в статусе, указанном в сценарии. "
-        "Используем токен владельца. "
-        "Ожидаем HTTP 200 и пустой JSON-массив в ответе."
+        "Выбираем пакет MWL с ID 50001 для пополнения в статусе, указанном в сценарии. Используем "
+        "токен владельца. Ожидаем HTTP 200 и пустой JSON-массив в ответе."
     )
     @pytest.mark.parametrize("refill_status", [
         pytest.param(0, id="Статус пополнения 0"),
@@ -157,9 +170,9 @@ class TestAPIBonusPacketRefill:
     )
     @allure.tag("negative", "field_refill")
     @allure.description(
-        "Запрашиваем выбор бонусного пакета для пополнения в запрещённом статусе, "
-        "указанном в сценарии. "
-        "Ожидаем HTTP 400 и сообщение refill_status_not_allowed."
+        "Запрашиваем выбор пакета с ID 50001 для пополнения в запрещённом статусе, указанном в "
+        "сценарии, с токеном владельца. Ожидаем HTTP 422, код REFILL_STATUS_NOT_ALLOWED и сообщение "
+        "refill_status_not_allowed."
     )
     @pytest.mark.parametrize("refill_status", [
         pytest.param(2, id="Запрещённый статус пополнения 2"),
@@ -177,31 +190,38 @@ class TestAPIBonusPacketRefill:
                 body={"refillId": refill_id, "bonusPacketId": 50001},
                 headers=user.jwt_header,
             )
-        with allure.step("Проверяем HTTP-статус 400"):
-            assert response.status_code == 400
-        with allure.step("Проверяем тело ответа"):
+        with allure.step("Проверяем HTTP-статус 422"):
+            assert response.status_code == 422
+        with allure.step("Проверяем код и тело ответа"):
+            assert response.json()["code"] == "REFILL_STATUS_NOT_ALLOWED"
             assert response.json()["message"] == "refill_status_not_allowed"
 
 
     @allure.title("Запрос с некорректным refillId отклоняется: {param_id}")
     @allure.testcase(
         "https://media.test8bit.com/testrail/index.php?/cases/view/12566512",
-        name="Проверка некорректный refillId",
+        name="Проверка некорректного refillId",
     )
     @allure.tag("negative", "field_refill")
     @allure.description(
-        "Отправляем запрос со значением refillId, указанным в сценарии. "
-        "Ожидаем HTTP 400 и сообщение об ошибке, соответствующее этому значению."
+        "Отправляем запрос с некорректным типом или значением refillId, указанным в сценарии, и "
+        "bonusPacketId = 50001. Используем токен зарегистрированного пользователя. Ожидаем HTTP 400, "
+        "код INVALID_REQUEST и сообщение Invalid request. Проверяем структуру ответа моделью Pydantic."
     )
-    @pytest.mark.parametrize("refill_id, expected_message", [
-        pytest.param(None, "Invalid request", id="Значение null"),
-        pytest.param("-1000", "refill_not_found", id="Отрицательный ID в виде строки"),
-        pytest.param("", "Validation failed", id="Пустая строка"),
+    @pytest.mark.parametrize("refill_id", [
+        pytest.param("12abc", id="Буквы и цифры вместо ID"),
+        pytest.param(None, id="Значение null"),
+        pytest.param("", id="Пустая строка"),
+        pytest.param(" ", id="Пробел"),
+        pytest.param([50001], id="Массив"),
+        pytest.param({"id": 50001}, id="JSON-объект"),
+        pytest.param(50000.5, id="Дробное число"),
+        #pytest.param(True, id="Логическое значение true конвертируетс] в 1 и тест буудет аффектить прогоны"),
+        pytest.param(False, id="Логическое значение false"),
     ])
     def test_invalid_refill_id(
             self,
             refill_id: int,
-            expected_message: str,
             create_user,
             bonus_packets_client,
     ):
@@ -211,8 +231,10 @@ class TestAPIBonusPacketRefill:
         )
         with allure.step("Проверяем HTTP-статус 400"):
             assert response.status_code == 400
-        with allure.step("Проверяем тело ответа"):
-            assert response.json()["message"] == expected_message
+        with allure.step("Проверяем структуру ответа моделью Pydantic, код и сообщение ошибки"):
+            error = BonusPacketRefillErrorResponseBase.model_validate(response.json())
+            assert error.message == "Invalid request"
+            assert error.code == "INVALID_REQUEST"
 
 
     @allure.title("Выбор бонусного пакета для чужого пополнения отклоняется")
@@ -222,8 +244,8 @@ class TestAPIBonusPacketRefill:
     )
     @allure.tag("negative", "field_refill")
     @allure.description(
-        "Запрашиваем выбор бонусного пакета для пополнения другого пользователя в статусе 1. "
-        "Ожидаем HTTP 400 и сообщение refill_not_found."
+        "Запрашиваем выбор бонусного пакета для пополнения другого пользователя в статусе 1. Ожидаем "
+        "HTTP 404, код NOT_FOUND и сообщение refill_not_found."
     )
     def test_incorrect_token_refill_id(
             self,
@@ -237,9 +259,10 @@ class TestAPIBonusPacketRefill:
                 body={"refillId": refill_id, "bonusPacketId": 50001},
                 headers=create_user.jwt_header,
             )
-        with allure.step("Проверяем HTTP-статус 400"):
-            assert response.status_code == 400
-        with allure.step("Проверяем тело ответа"):
+        with allure.step("Проверяем HTTP-статус 404"):
+            assert response.status_code == 404
+        with allure.step("Проверяем код и тело ответа"):
+            assert response.json()["code"] == "NOT_FOUND"
             assert response.json()["message"] == "refill_not_found"
 
     @staticmethod
@@ -258,32 +281,33 @@ class TestAPIBonusPacketRefill:
     @allure.title("Запрос с некорректным bonusPacketId отклоняется: {param_id}")
     @allure.testcase(
         "https://media.test8bit.com/testrail/index.php?/cases/view/12653591",
-        name="Проверка некорректный bonusPacketId",
+        name="Проверка некорректного bonusPacketId",
     )
     @allure.tag("negative", "field_bonus_packet")
     @allure.description(
-        "Отправляем запрос со значением bonusPacketId, указанным в сценарии. "
-        "Ожидаем HTTP 400 и соответствующее сообщение об ошибке. "
-        "Проверяем, что записи пополнения в user_selected_option "
-        "и refill_additional_data не изменились."
+        "Отправляем запрос с некорректным типом или значением bonusPacketId, указанным в сценарии, "
+        "для пополнения в статусе 0 с токеном владельца. Ожидаем HTTP 400, код INVALID_REQUEST и "
+        "сообщение Invalid request. Проверяем структуру ответа моделью Pydantic и отсутствие "
+        "изменений записей пополнения в user_selected_option и refill_additional_data."
     )
-    @pytest.mark.parametrize("bonus_packet_id, expected_message", [
-        pytest.param("act", "Invalid request", id="Текст вместо ID"),
-        pytest.param("", "Invalid request", id="Пустая строка"),
-        pytest.param(None, "Invalid request", id="Значение null"),
-        pytest.param("missing_bonus_packet_id", "bonus_packet_not_found", id="Несуществующий ID пакета"),
+    @pytest.mark.parametrize("bonus_packet_id", [
+        pytest.param("12abc", id="Буквы и цифры вместо ID"),
+        pytest.param(None, id="Значение null"),
+        pytest.param("", id="Пустая строка"),
+        pytest.param(" ", id="Пробел"),
+        pytest.param([50001], id="Массив"),
+        pytest.param({"id": 50001}, id="JSON-объект"),
+        pytest.param(50000.5, id="Дробное число"),
+        #pytest.param(True, id="Логическое значение true конвертируетс] в 1 и тест буудет аффектить прогоны"),
+        pytest.param(False, id="Логическое значение false"),
     ])
     def test_incorrect_bonus_packet_id(
             self,
             database_client,
             bonus_packet_id,
             create_user_and_refill,
-            expected_message,
-            request: pytest.FixtureRequest,
             bonus_packets_client,
     ) -> None:
-        if bonus_packet_id == "missing_bonus_packet_id":
-            bonus_packet_id = request.getfixturevalue(bonus_packet_id)
         user, refill_id = create_user_and_refill(0)
         before = self._read_state(database_client, refill_id)
         response = bonus_packets_client.put_bonus_packets_refill(
@@ -293,10 +317,12 @@ class TestAPIBonusPacketRefill:
         with allure.step("Проверяем HTTP-статус 400"):
             assert response.status_code == 400
         after = self._read_state(database_client, refill_id)
-        with allure.step("Сравнение записей в БД до и после выполнения запроса"):
+        with allure.step("Проверяем отсутствие изменений данных пополнения в обеих таблицах"):
             assert after == before
-        with allure.step("Проверяем тело ответа"):
-            assert response.json()["message"] == expected_message
+        with allure.step("Проверяем структуру ответа моделью Pydantic, код и сообщение ошибки"):
+            error = BonusPacketRefillErrorResponseBase.model_validate(response.json())
+            assert error.code == "INVALID_REQUEST"
+            assert error.message == "Invalid request"
 
 
     @allure.title("Выбор бонусного пакета MOSTBET сохраняется в БД")
@@ -306,11 +332,10 @@ class TestAPIBonusPacketRefill:
     )
     @allure.tag("positive", "field_bonus_packet")
     @allure.description(
-        "Выбираем существующий пакет MOSTBET для пополнения в статусе 0. "
-        "Ожидаем HTTP 200 и пустой JSON-массив. "
-        "Проверяем наличие выбранного packetId в user_selected_option, "
-        "ровно три записи с уникальными именами в refill_additional_data, "
-        "корректный bonus_package_id и источник MOSTBET."
+        "Выбираем существующий пакет MOSTBET для пополнения в статусе 0 с токеном владельца. Ожидаем "
+        "HTTP 200 и пустой JSON-массив. Проверяем наличие выбранного packetId в user_selected_option "
+        "и ровно три записи с уникальными именами в refill_additional_data. Значение bonus_package_id "
+        "должно совпадать с ID выбранного пакета, а bonus_package_source — быть равным MOSTBET."
     )
     def test_mst_bonus_packets(
             self,
@@ -353,11 +378,11 @@ class TestAPIBonusPacketRefill:
     )
     @allure.tag("positive", "field_bonus_packet")
     @allure.description(
-        "Выбираем пакет MWL с ID, указанным в сценарии, для пополнения в статусе 0. "
-        "Ожидаем HTTP 200 и пустой JSON-массив. "
-        "Проверяем отсутствие изменений в user_selected_option, "
-        "наличие ровно трёх записей с уникальными именами в refill_additional_data, "
-        "корректный bonus_package_id и источник MWL."
+        "Выбираем пакет MWL с ID, указанным в сценарии, для пополнения в статусе 0 с токеном "
+        "владельца. Ожидаем HTTP 200 и пустой JSON-массив. Проверяем отсутствие изменений в "
+        "user_selected_option и наличие ровно трёх записей с уникальными именами в "
+        "refill_additional_data. Значение bonus_package_id должно совпадать с ID выбранного пакета, а "
+        "bonus_package_source — быть равным MWL."
     )
     @pytest.mark.parametrize("bonus_packet_id", [
         pytest.param(50000, id="Пакет 50000"),
@@ -392,3 +417,4 @@ class TestAPIBonusPacketRefill:
             assert data["bonus_package_id"] == str(bonus_packet_id)
         with allure.step("Проверяем, что bonus_package_source равен MWL"):
             assert data["bonus_package_source"] == "MWL"
+
