@@ -1,17 +1,17 @@
 import pymysql
 import pymysql.cursors
-from src.config import HOST, SSH_USER, PASSWORD, DATABASE, PORT
+from src.config import PASSWORD, DEV_STAND, DB_USER
 
 
 class DBClient:
     def __init__(self) -> None:
         """Подключиться к базе данных."""
         self.client: pymysql.connections.Connection | None = pymysql.connect(
-            host=HOST,
-            user=SSH_USER,
-            port=PORT,
+            host='haproxy-global-dev-htzn.dats.services',
+            user=DB_USER,
+            port=2601,
             password=PASSWORD,
-            database=DATABASE,
+            database=f"mostbet{DEV_STAND.removeprefix('dev')}",
             # API/SSH пишут через другие подключения: каждый SELECT должен
             # видеть уже зафиксированные изменения, без снимка прошлого теста.
             autocommit=True,

@@ -1,14 +1,14 @@
 import shlex
 
 from fabric import Connection
-from src.config import SSH_USER, DEV_STAND, SSH_HOST
+from src.config import SSH_USER, DEV_STAND
 
 
 class SSHClient:
     def __init__(self) -> None:
         """Подключение по SSH."""
         self.client: Connection | None = Connection(
-            host=f"{SSH_USER}@{DEV_STAND}.{SSH_HOST}", connect_timeout=10
+            host=f"{SSH_USER}@{DEV_STAND}.mostbet.com", connect_timeout=10
         )
 
     def refill(self, user_id: str, amount: int = 1000) -> None:

@@ -1,5 +1,6 @@
 import allure
 import pytest
+
 from src.db_client import DBClient
 from src.models.bonus_packets_models import BonusPacketRefillErrorResponseDetails, BonusPacketRefillErrorResponseBase
 
@@ -417,4 +418,3 @@ class TestAPIBonusPacketRefill:
             assert data["bonus_package_id"] == str(bonus_packet_id)
         with allure.step("Проверяем, что bonus_package_source равен MWL"):
             assert data["bonus_package_source"] == "MWL"
-

@@ -5,10 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bd1ae840-95b0-4644-95de-a0475877cddc" name="Changes" comment="update">
-      <change afterPath="$PROJECT_DIR$/src/models/bonus_packets_models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/db_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/db_client.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/bonus_packets/test_api_bonus_packets_refill.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/bonus_packets/test_api_bonus_packets_refill.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -26,7 +25,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="codex/stabilize-pr-3" />
+        <entry key="$PROJECT_DIR$" value="vereble" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -85,7 +84,7 @@
     "git-widget-placeholder": "my-project"
   }
 }]]></component>
-  <component name="RunManager" selected="Python tests.Python tests for test_api_bonus_packets_refill.TestAPIBonusPacketRefill.test_invalid_refill_id">
+  <component name="RunManager" selected="Python tests.Python tests for test_api_bonus_packets_refill.TestAPIBonusPacketRefill">
     <configuration name="Python tests for test_api_bonus_packets_refill.TestAPIBonusPacketRefill" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="PythonProject2" />
       <option name="ENV_FILES" value="" />
@@ -189,11 +188,11 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python tests.Python tests for test_api_bonus_packets_refill.TestAPIBonusPacketRefill.test_invalid_refill_id" />
         <item itemvalue="Python tests.Python tests for test_api_bonus_packets_refill.TestAPIBonusPacketRefill" />
-        <item itemvalue="Python tests.Python tests for test_api_bonus_packets_refill.TestAPIBonusPacketRefill.test_incorrect_bonus_packet_id" />
-        <item itemvalue="Python tests.Python tests for test_testov.test_incorrect_bonus_packet_id" />
         <item itemvalue="Python tests.Python tests for test_testov.test_incorrect_bonus_packet_idd" />
+        <item itemvalue="Python tests.Python tests for test_testov.test_incorrect_bonus_packet_id" />
+        <item itemvalue="Python tests.Python tests for test_api_bonus_packets_refill.TestAPIBonusPacketRefill.test_invalid_refill_id" />
+        <item itemvalue="Python tests.Python tests for test_api_bonus_packets_refill.TestAPIBonusPacketRefill.test_incorrect_bonus_packet_id" />
       </list>
     </recent_temporary>
   </component>
@@ -253,7 +252,15 @@
       <option name="project" value="LOCAL" />
       <updated>1793208937879</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="update">
+      <option name="closed" value="true" />
+      <created>1794316526402</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1794316526402</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="UnknownFeatures">
